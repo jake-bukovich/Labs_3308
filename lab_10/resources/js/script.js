@@ -27,7 +27,7 @@ $(document).ready(function() {
     $("#local_time").html(data.location.localtime);
     $("#image_today").attr("src",data.current.weather_icons[0]);
     $("#heading").html("Today's Weather Forecast - "+ data.location.name);
-    $("#thermometer_inner").css("height", getFarenheitTemp(data.current.temperature)+20);
+    $("#thermometer_inner").css("height", getFarenheitTemp(data.current.temperature)*2.667);
     $("#precip_today").html(data.current.precip+"%");
     $("#humidity_today").html(data.current.humidity+"%");
     $("#wind_today").html(data.current.wind_speed);
