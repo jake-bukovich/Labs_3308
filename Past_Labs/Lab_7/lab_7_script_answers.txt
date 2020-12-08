@@ -1,1 +1,211 @@
+Name: Jacob Bukovich
+
+###Answer Scripts
+
+
+##SECTION 3
+
+#3.1 :Write an SQL Script to create a new table to hold information on the competing universities. The table should hold the following information:
+
+  University Name (Text) (Note: University Name should be unique and set as PRIMARY KEY)
+  Date Established (Date)
+  Address (Address)
+  Student Population (Int)
+  Acceptance Rate (Decimal)
+
+>> football_db=# CREATE TABLE IF NOT EXISTS University_info(
+football_db(# uni_name VARCHAR(200),
+football_db(# date_established DATE,
+football_db(# address TEXT,
+football_db(# population INT,
+football_db(# acceptance_rate DECIMAL);
+CREATE TABLE
+
+
+
+
+
+#3.2 Write an insert statement to add the University Information The table should hold the following information:
+
+       University Name :- CU Boulder
+       Date Established :- 1876
+       Address :- 1100 28th St, Boulder, CO 80303
+       Student Population :- 35,000
+       Acceptance Rate :- 80%
+
+>> football_db=# INSERT INTO University_info(uni_name, date_established, address, population, acceptance_rate)
+football_db-# VALUES('CU Boulder', to_date('18760401','yyyymmdd'),'1100 28thSt, Boulder, CO 80303',35000,0.80);
+INSERT 0 1
+
+
+
+
+
+##SECTION 4
+
+#4.1 Write a script to list the Football Players (name & major), organized by major in college.
+
+>>football_db=# SELECT name, major FROM football_players ORDER BY major
+football_db-# ;
+       name        | major 
+-------------------+-------
+ Cedric Vega       | ARTS
+ Wade Farmer       | ARTS
+ Erick Graves      | ARTS
+ Jared Castillo    | ARTS
+ Doyle Huff        | CSCI
+ Myron Walters     | CSCI
+ Charles Porter    | CSCI
+ Melba Pope        | MATH
+ Rafael Boreous    | MATH
+ Javier Washington | MATH
+(10 rows)
+
+
+#4.2 Write a script to list all of the Football Players (name & rushing yards) who have 70 or more rushing yards.
+
+>>football_db=# SELECT name, rushing_yards FROM football_players WHERE rushing_yards>=70;
+      name      | rushing_yards 
+----------------+---------------
+ Erick Graves   |            78
+ Charles Porter |           102
+ Rafael Boreous |           111
+ Jared Castillo |           113
+(4 rows)
+
+
+#4.3 Write a script to list all of the games played against Nebraska (show all game information).
+
+>>football_db=# SELECT * FROM football_games WHERE visitor_name='Nebraska';
+ visitor_name | home_score | visitor_score | game_date  |   players   
+--------------+------------+---------------+------------+-------------
+ Nebraska     |         33 |            28 | 2020-09-08 | {2,3,4,5,6}
+(1 row)
+
+
+#4.4 Write a script to list all of the games CU Boulder has won.
+
+>>football_db=# SELECT * FROM football_games WHERE home_score>visitor_score;
+  visitor_name  | home_score | visitor_score | game_date  |   players   
+----------------+------------+---------------+------------+-------------
+ Colorado State+|         45 |            13 | 2020-08-31 | {1,2,3,4,5}
+                |            |               |            | 
+ Nebraska       |         33 |            28 | 2020-09-08 | {2,3,4,5,6}
+ New Hampshire  |         45 |            14 | 2020-09-15 | {3,4,5,6,7}
+ UCLA           |         38 |            16 | 2020-09-28 | {4,5,6,7,8}
+ Arizona State  |         28 |            21 | 2020-10-06 | {5,6,7,8,9}
+(5 rows)
+
+
+#4.5 Write a script to list all of the games played in the Fall 2020 Season (show team name & game date).
+
+>>football_db=# SELECT visitor_name, game_date FROM football_games WHERE game_date BETWEEN to_date('20200901','yyyymmdd') AND to_date('20201231','yyyymmdd');
+    visitor_name     | game_date  
+---------------------+------------
+ Nebraska            | 2020-09-08
+ New Hampshire       | 2020-09-15
+ UCLA                | 2020-09-28
+ Arizona State       | 2020-10-06
+ Southern California | 2020-10-13
+ Washington          | 2020-10-20
+ Oregon State        | 2020-10-27
+ Arizona             | 2020-11-02
+ Washington State    | 2020-11-10
+ Utah                | 2020-11-17
+ California          | 2020-11-24
+(11 rows)
+
+
+#4.6 Write a script to list the average number of points CU has scored in past games.
+
+>>football_db=# SELECT AVG(home_score) FROM football_games;
+         avg         
+---------------------
+ 27.0833333333333333
+(1 row)
+
+
+#4.7 Write a script to list the majors of the Football players and calculate how many of them are in each of the majors listed. Rename the column where you calculate the majors to number_of_players.
+
+>>football_db=# SELECT major, COUNT(major) AS number_of_players FROM football_players GROUP BY major;
+ major | number_of_players 
+-------+-------------------
+ CSCI  |                 3
+ ARTS  |                 4
+ MATH  |                 3
+(3 rows)
+
+
+
+#4.8 Write a script to modify the above query in 5.6 to include only the Football players who are majoring in Computer Science.
+
+football_db=# SELECT major, COUNT(major) AS number_of_players FROM football_players WHERE major='CSCI' GROUP BY major;
+ major | number_of_players 
+-------+-------------------
+ CSCI  |                 3
+(1 row)
+
+
+
+
+
+##SECTION 5
+
+#5.1 Write a script to create a view that counts the total number of winning games.
+
+>>football_db=# CREATE VIEW AS
+football_db-# SELECT COUNT(*) AS winning_games FROM football_games WHERE home_score > visitor_score;
+CREATE VIEW
+football_db=# SELECT * FROM winning_games;
+ winning_games 
+---------------
+             5
+(1 row)
+
+
+
+#5.2 Write a script to create a view that counts the total number of games played.
+
+>>football_db=# CREATE VIEWAS
+football_db-# SELECT COUNT(*) AS games FROM football_games;
+CREATE VIEW
+football_db=# SELECT * FROM games
+football_db-# ;
+ games 
+-------
+    12
+(1 row)
+
+
+#5.3 Write a script that uses the two views you created (from 6.1 and 6.2) to calculate the percent of wins.
+
+>>football_db=# SELECT (winning_games/ Cast((SELECT games FROM games) AS DECIMAL(7,4))) * 100 FROM winning_games;
+        ?column?         
+-------------------------
+ 41.66666666666666666700
+(1 row)
+
+
+
+##SECTION 6
+
+#6.1 Write a script that will count how many games "Cedric Vega" has played in during his entire football career.
+
+>>football_db=# SELECT COUNT(*) FROM football_games WHERE (SELECT id FROM football_players WHERE name='Cedric Vega')=ANY(players);
+ count 
+-------
+     6
+(1 row)
+
+
+
+#6.2 Write a script that will calculate the average number of rushing yards for "Cedric Vega", based on the number of games he has played.
+
+>>football_db=# SELECT (CAST((p.rushing_yards) AS DECIMAL(7,2)) / COUNT(*)) FROM football_games g, football_players p WHERE p.id = ANY(players) AND p.name = 'Cedric Vega' GROUP BY p.rushing_yards;
+      ?column?      
+--------------------
+ 4.1666666666666667
+(1 row)
+
+
 
